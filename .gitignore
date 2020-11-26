@@ -1,0 +1,10 @@
+# node / npm
+node_modules/
+package-lock.json
+
+# editor
+.idea
+.vscode
+
+# OS
+.DS_Store
