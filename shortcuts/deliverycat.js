@@ -1,7 +1,7 @@
 import { decorateMention, decorateQuote } from "../utils/decorate.js";
 import { timeout, currentHMS } from "../utils/timer.js";
 
-export const showModal = (app) => {
+const showModal = (app) => {
 	// Listen for a slash command invocation
 	app.shortcut("delivery_cat", async ({ shortcut, ack, client }) => {
 		// Acknowledge the command request
@@ -104,7 +104,7 @@ export const showModal = (app) => {
 	});
 };
 
-export const submiFormData = (app) => {
+const submitFormData = (app) => {
 	// Handle a view_submission event
 	app.view("delivery_modal", async ({ ack, body, view, client }) => {
 		// Acknowledge the view_submission event
@@ -162,3 +162,9 @@ export const submiFormData = (app) => {
 		}
 	});
 };
+
+
+export {
+	showModal,
+	submitFormData
+}

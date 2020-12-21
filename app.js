@@ -1,5 +1,5 @@
 import { App } from "@slack/bolt";
-import { showModal, submiFormData } from "./shortcuts/deliverycat.js";
+import { showModal, submitFormData } from "./shortcuts/deliverycat.js";
 
 // Initializes your app with your bot token and signing secret
 const app = new App({
@@ -10,7 +10,7 @@ const app = new App({
 
 // Shortcuts
 showModal(app);
-submiFormData(app);
+submitFormData(app);
 
 
 (async () => {
