@@ -1,37 +1,11 @@
 import { decorateMention, decorateQuote } from "../utils/decorate.js";
-
-const createUsersList = (members, shortcut) => {
-	let result = [];
-	Object.keys(members).forEach(function (key) {
-		if (
-			members[key]["is_bot"] == false &&
-			shortcut["user"]["id"] != members[key]["id"]
-		) {
-			let user_name = members[key]["profile"]["display_name"]
-				? members[key]["profile"]["display_name"]
-				: members[key]["profile"]["real_name"];
-
-			result.push({
-				text: {
-					type: "plain_text",
-					text: user_name,
-				},
-				value: members[key]["id"],
-			});
-		}
-	});
-
-	return result;
-};
+import { timeout, currentHMS } from "../utils/timer.js";
 
 export const showModal = (app) => {
 	// Listen for a slash command invocation
 	app.shortcut("delivery_cat", async ({ shortcut, ack, client }) => {
 		// Acknowledge the command request
 		await ack();
-
-		const workspaceUser = await client.users.list();
-		const usersList = createUsersList(workspaceUser["members"], shortcut);
 
 		try {
 			// Call views.open with the built-in client
@@ -51,14 +25,57 @@ export const showModal = (app) => {
 						{
 							type: "input",
 							block_id: "recipient_block",
+							element: {
+								type: "users_select",
+								placeholder: {
+									type: "plain_text",
+									text: "Select users",
+									emoji: true,
+								},
+								action_id: "recipient_input",
+							},
 							label: {
 								type: "plain_text",
 								text: "宛先を選ぶにゃ",
+								emoji: true,
+							},
+						},
+						{
+							type: "input",
+							block_id: "timer_block",
+							label: {
+								type: "plain_text",
+								text: "急ぎのメッセージかにゃ？",
 							},
 							element: {
 								type: "static_select",
-								action_id: "recipient_input",
-								options: usersList,
+								action_id: "timer_input",
+								options: [
+									{
+										text: {
+											type: "plain_text",
+											text: "そこまで",
+											emoji: true,
+										},
+										value: "0",
+									},
+									{
+										text: {
+											type: "plain_text",
+											text: "なるはやで",
+											emoji: true,
+										},
+										value: "1",
+									},
+									{
+										text: {
+											type: "plain_text",
+											text: "今すぐ",
+											emoji: true,
+										},
+										value: "2",
+									},
+								],
 							},
 						},
 						{
@@ -93,28 +110,53 @@ export const submiFormData = (app) => {
 		// Acknowledge the view_submission event
 		await ack();
 
+		// console.log(view["state"]["values"]);
+
 		const sender = body["user"]["id"];
 		const recipient =
 			view["state"]["values"]["recipient_block"]["recipient_input"][
-				"selected_option"
-			]["value"];
+				"selected_user"
+			];
 		const fromWho = decorateMention(sender);
 		const toWho = decorateMention(recipient);
-		const content = view["state"]["values"]["body_block"]["body_input"]["value"];
-		const letter = fromWho + "からお手紙が届いてるにゃ\n" + decorateQuote(content);
+		const importance =
+			view["state"]["values"]["timer_block"]["timer_input"]["selected_option"][
+				"value"
+			];
+
+		let ms = 0;
+		if (importance == "0") {
+			ms = 20000; // 20秒
+		} else if (importance == "1") {
+			ms = 10000; // 10秒
+		}
+
+		console.log(ms);
+		console.log(currentHMS(new Date()));
+
+		const content =
+			view["state"]["values"]["body_block"]["body_input"]["value"];
+		const letter =
+			fromWho + "からお手紙が届いてるにゃ\n" + decorateQuote(content);
 		const msg = toWho + "にお手紙を届けたにゃ";
 
 		// Message to both the sender and the recepient
 		try {
-			await client.chat.postMessage({
-				channel: recipient,
-				text: letter,
-			});
+			const sendMessage =  () => {
+				client.chat.postMessage({
+					channel: recipient,
+					text: letter,
+				});
+				client.chat.postMessage({
+					channel: sender,
+					text: msg,
+				});
 
-			await client.chat.postMessage({
-				channel: sender,
-				text: msg,
-			});
+				console.log('here');
+				console.log(currentHMS(new Date()));
+			};
+
+			setTimeout(sendMessage, ms);
 		} catch (error) {
 			console.error(error);
 		}
