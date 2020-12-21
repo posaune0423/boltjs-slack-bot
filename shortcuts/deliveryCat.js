@@ -36,8 +36,8 @@ export const showModal = (app) => {
 		// Acknowledge the command request
 		await ack();
 
-		const users = await client.users.list();
-		const usersList = createUsersList(users["members"], shortcut);
+		const workspaceUser = await client.users.list();
+		const usersList = createUsersList(workspaceUser["members"], shortcut);
 
 		try {
 			// Call views.open with the built-in client
@@ -104,19 +104,17 @@ export const submiFormData = (app) => {
 			view["state"]["values"]["recipient_block"]["recipient_input"][
 				"selected_option"
 			]["value"];
-
 		const fromWho = decorateMention(sender);
 		const toWho = decorateMention(recipient);
-		let content = view["state"]["values"]["body_block"]["body_input"]["value"];
-		let msg = toWho + "に" + "お手紙を届けたにゃ\n";
+		const content = view["state"]["values"]["body_block"]["body_input"]["value"];
+		const letter = fromWho + "からお手紙が届いてるにゃ\n" + decorateQuote(content);
+		const msg = toWho + "に" + "お手紙を届けたにゃ\n";
 
-		content = fromWho + "からお手紙が届いてるにゃ\n" + decorateQuote(content);
-
-		// Message the user
+		// Message to both the sender and the recepient
 		try {
 			await client.chat.postMessage({
 				channel: recipient,
-				text: content,
+				text: letter,
 			});
 
 			await client.chat.postMessage({
