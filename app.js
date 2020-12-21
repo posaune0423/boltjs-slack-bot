@@ -7,11 +7,9 @@ const app = new App({
 	signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
-
 // Shortcuts
 showModal(app);
 submitFormData(app);
-
 
 (async () => {
 	// Start your app

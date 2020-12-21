@@ -142,7 +142,7 @@ const submitFormData = (app) => {
 
 		// Message to both the sender and the recepient
 		try {
-			const sendMessage =  () => {
+			const sendMessage = () => {
 				client.chat.postMessage({
 					channel: recipient,
 					text: letter,
@@ -152,7 +152,7 @@ const submitFormData = (app) => {
 					text: msg,
 				});
 
-				console.log('here');
+				console.log("here");
 				console.log(currentHMS(new Date()));
 			};
 
@@ -163,8 +163,4 @@ const submitFormData = (app) => {
 	});
 };
 
-
-export {
-	showModal,
-	submitFormData
-}
+export { showModal, submitFormData };

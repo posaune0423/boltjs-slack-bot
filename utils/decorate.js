@@ -6,7 +6,4 @@ const decorateQuote = (text) => {
 	return "```" + text + "```";
 };
 
-export {
-	decorateMention,
-	decorateQuote
-}
+export { decorateMention, decorateQuote };
