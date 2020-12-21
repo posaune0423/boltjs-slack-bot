@@ -1,3 +1,5 @@
+import { decorateMention, decorateQuote } from "../utils/decorate.js";
+
 const createUsersList = (members, shortcut) => {
 	let result = [];
 	Object.keys(members).forEach(function (key) {
@@ -20,14 +22,6 @@ const createUsersList = (members, shortcut) => {
 	});
 
 	return result;
-};
-
-const decorateMention = (text) => {
-	return "<@" + text + ">";
-};
-
-const decorateQuote = (text) => {
-	return "```" + text + "```";
 };
 
 export const showModal = (app) => {
