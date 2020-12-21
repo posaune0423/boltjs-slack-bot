@@ -11,6 +11,6 @@
     "license": "MIT",
     "dependencies": {
         "@slack/bolt": "^2.3.0"
-    }
+    },
+    "type": "module"
 }
-
