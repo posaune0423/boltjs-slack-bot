@@ -102,7 +102,7 @@ export const submiFormData = (app) => {
 		const toWho = decorateMention(recipient);
 		const content = view["state"]["values"]["body_block"]["body_input"]["value"];
 		const letter = fromWho + "からお手紙が届いてるにゃ\n" + decorateQuote(content);
-		const msg = toWho + "に" + "お手紙を届けたにゃ\n";
+		const msg = toWho + "にお手紙を届けたにゃ\n";
 
 		// Message to both the sender and the recepient
 		try {
