@@ -2,9 +2,9 @@ import { decorateMention, decorateCode } from "../utils/decorate.js";
 // import { timeout, currentHMS } from "../utils/timer.js";
 
 const showModal = (app) => {
-	// Listen for a slash command invocation
+	// Listen for a shoertcut invocation
 	app.shortcut("delivery_cat", async ({ shortcut, ack, client }) => {
-		// Acknowledge the command request
+		// Acknowledge the shortcut request
 		await ack();
 
 		try {
