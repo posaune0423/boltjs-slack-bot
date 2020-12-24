@@ -2,8 +2,8 @@ const decorateMention = (text) => {
 	return "<@" + text + ">";
 };
 
-const decorateQuote = (text) => {
+const decorateCode = (text) => {
 	return "```" + text + "```";
 };
 
-export { decorateMention, decorateQuote };
+export { decorateMention, decorateCode };
