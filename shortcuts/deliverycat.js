@@ -1,5 +1,5 @@
-import { decorateMention, decorateQuote } from "../utils/decorate.js";
-import { timeout, currentHMS } from "../utils/timer.js";
+import { decorateMention, decorateCode } from "../utils/decorate.js";
+// import { timeout, currentHMS } from "../utils/timer.js";
 
 const showModal = (app) => {
 	// Listen for a slash command invocation
@@ -42,6 +42,19 @@ const showModal = (app) => {
 						},
 						{
 							type: "input",
+							block_id: "body_block",
+							label: {
+								type: "plain_text",
+								text: "何を伝えるにゃ？",
+							},
+							element: {
+								type: "plain_text_input",
+								action_id: "body_input",
+								multiline: true,
+							},
+						},
+						{
+							type: "input",
 							block_id: "timer_block",
 							label: {
 								type: "plain_text",
@@ -54,7 +67,7 @@ const showModal = (app) => {
 									{
 										text: {
 											type: "plain_text",
-											text: "そこまで",
+											text: "そんなに",
 											emoji: true,
 										},
 										value: "0",
@@ -78,19 +91,6 @@ const showModal = (app) => {
 								],
 							},
 						},
-						{
-							type: "input",
-							block_id: "body_block",
-							label: {
-								type: "plain_text",
-								text: "何を伝えるにゃ？",
-							},
-							element: {
-								type: "plain_text_input",
-								action_id: "body_input",
-								multiline: true,
-							},
-						},
 					],
 					submit: {
 						type: "plain_text",
@@ -110,7 +110,6 @@ const submitFormData = (app) => {
 		// Acknowledge the view_submission event
 		await ack();
 
-		// console.log(view["state"]["values"]);
 
 		const sender = body["user"]["id"];
 		const recipient =
@@ -119,26 +118,22 @@ const submitFormData = (app) => {
 			];
 		const fromWho = decorateMention(sender);
 		const toWho = decorateMention(recipient);
-		const importance =
-			view["state"]["values"]["timer_block"]["timer_input"]["selected_option"][
-				"value"
-			];
-
-		let ms = 0;
-		if (importance == "0") {
-			ms = 20000; // 20秒
-		} else if (importance == "1") {
-			ms = 10000; // 10秒
-		}
-
-		console.log(ms);
-		console.log(currentHMS(new Date()));
-
 		const content =
 			view["state"]["values"]["body_block"]["body_input"]["value"];
 		const letter =
-			fromWho + "からお手紙が届いてるにゃ\n" + decorateQuote(content);
+			fromWho + "からお手紙が届いてるにゃ\n" + decorateCode(content);
 		const msg = toWho + "にお手紙を届けたにゃ";
+		const importance =
+		view["state"]["values"]["timer_block"]["timer_input"]["selected_option"][
+			"value"
+		];
+
+		let ms = 0;
+		if (importance == "0") {
+			ms = Math.floor(Math.random() * 2000000); // 200s - 2000s
+		} else if (importance == "1") {
+			ms = Math.floor(Math.random() * 1000000); // 100s - 1000s
+		}
 
 		// Message to both the sender and the recepient
 		try {
@@ -151,9 +146,6 @@ const submitFormData = (app) => {
 					channel: sender,
 					text: msg,
 				});
-
-				console.log("here");
-				console.log(currentHMS(new Date()));
 			};
 
 			setTimeout(sendMessage, ms);
