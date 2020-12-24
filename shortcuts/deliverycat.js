@@ -26,7 +26,7 @@ const showModal = (app) => {
 							type: "input",
 							block_id: "recipient_block",
 							element: {
-								type: "users_select",
+								type: "multi_users_select",
 								placeholder: {
 									type: "plain_text",
 									text: "Select users",
@@ -112,12 +112,18 @@ const submitFormData = (app) => {
 
 
 		const sender = body["user"]["id"];
-		const recipient =
-			view["state"]["values"]["recipient_block"]["recipient_input"][
-				"selected_user"
-			];
 		const fromWho = decorateMention(sender);
-		const toWho = decorateMention(recipient);
+
+		const recipients =
+			view["state"]["values"]["recipient_block"]["recipient_input"][
+				"selected_users"
+			];
+		let toWho = "";
+		recipients.forEach(v => {
+			toWho +=  decorateMention(v) + ", ";
+		});
+		toWho = toWho.slice(0, -2);
+
 		const content =
 			view["state"]["values"]["body_block"]["body_input"]["value"];
 		const letter =
@@ -138,10 +144,13 @@ const submitFormData = (app) => {
 		// Message to both the sender and the recepient
 		try {
 			const sendMessage = () => {
-				client.chat.postMessage({
-					channel: recipient,
-					text: letter,
+				recipients.forEach(v => {
+					client.chat.postMessage({
+						channel: v,
+						text: letter,
+					});
 				});
+
 				client.chat.postMessage({
 					channel: sender,
 					text: msg,
