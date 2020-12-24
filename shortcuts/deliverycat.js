@@ -56,37 +56,27 @@ const showModal = (app) => {
 						{
 							type: "input",
 							block_id: "timer_block",
+							optional: true,
+							hint: {
+								type: "plain_text",
+								text: "通常の配達では猫が気まぐれな時間に手紙を配達します。",
+							},
 							label: {
 								type: "plain_text",
 								text: "急ぎのメッセージかにゃ？",
+								emoji: true,
 							},
 							element: {
-								type: "static_select",
+								type: "checkboxes",
 								action_id: "timer_input",
 								options: [
 									{
 										text: {
 											type: "plain_text",
-											text: "そんなに",
-											emoji: true,
-										},
-										value: "0",
-									},
-									{
-										text: {
-											type: "plain_text",
-											text: "なるはやで",
+											text: "お急ぎ便",
 											emoji: true,
 										},
 										value: "1",
-									},
-									{
-										text: {
-											type: "plain_text",
-											text: "今すぐ",
-											emoji: true,
-										},
-										value: "2",
 									},
 								],
 							},
@@ -110,7 +100,6 @@ const submitFormData = (app) => {
 		// Acknowledge the view_submission event
 		await ack();
 
-
 		const sender = body["user"]["id"];
 		const fromWho = decorateMention(sender);
 
@@ -119,8 +108,8 @@ const submitFormData = (app) => {
 				"selected_users"
 			];
 		let toWho = "";
-		recipients.forEach(v => {
-			toWho +=  decorateMention(v) + ", ";
+		recipients.forEach((v) => {
+			toWho += decorateMention(v) + ", ";
 		});
 		toWho = toWho.slice(0, -2);
 
@@ -130,21 +119,18 @@ const submitFormData = (app) => {
 			fromWho + "からお手紙が届いてるにゃ\n" + decorateCode(content);
 		const msg = toWho + "にお手紙を届けたにゃ";
 		const importance =
-		view["state"]["values"]["timer_block"]["timer_input"]["selected_option"][
-			"value"
-		];
+			view["state"]["values"]["timer_block"]["timer_input"]["selected_options"];
 
-		let ms = 0;
-		if (importance == "0") {
-			ms = Math.floor(Math.random() * 2000000); // 200s - 2000s
-		} else if (importance == "1") {
-			ms = Math.floor(Math.random() * 1000000); // 100s - 1000s
+		let ms = Math.floor(Math.random() * 1000000); // 100s - 1000s
+		if (importance) {
+			ms = 0;
 		}
+
 
 		// Message to both the sender and the recepient
 		try {
 			const sendMessage = () => {
-				recipients.forEach(v => {
+				recipients.forEach((v) => {
 					client.chat.postMessage({
 						channel: v,
 						text: letter,
