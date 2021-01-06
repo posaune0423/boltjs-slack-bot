@@ -23,7 +23,7 @@ git clone https://github.com/slackapi/bolt-js-getting-started-app.git
 cd bolt-js-getting-started-app/
 
 # Install the dependencies
-npm install
+yarn install
 ```
 
 ### 3. Start servers
@@ -31,6 +31,6 @@ npm install
 [Setup ngrok][3] to create a local requests URL for development.
 
 ```zsh
-npm run ngrok
-npm run start
+yarn ngrok
+yarn start
 ```
