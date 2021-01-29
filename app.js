@@ -1,19 +1,47 @@
-import { App } from "@slack/bolt";
-import { showModal, submitFormData } from "./shortcuts/deliverycat.js";
+"use strict";
 
-// Initializes your app with your bot token and signing secret
+import { App } from "@slack/bolt";
+import { autoReply } from "./commands/test";
+
+
+const expressReceiver = new ExpressReceiver({
+	signingSecret: process.env.SLACK_SIGNING_SECRET,
+	endpoints: "/events",
+	processBeforeResponse: true,
+});
+// Initializes your app with your bot token and the AWS Lambda ready receiver
 const app = new App({
 	token: process.env.SLACK_BOT_TOKEN,
-	signingSecret: process.env.SLACK_SIGNING_SECRET,
+	receiver: expressReceiver,
+	processBeforeResponse: true,
 });
+const expressApp = expressReceiver.app;
 
-// Shortcuts
-showModal(app);
-submitFormData(app);
+// Commands
+autoReply(app);
 
-(async () => {
-	// Start your app
-	await app.start(process.env.PORT || 3000);
 
-	console.log("⚡️ Bolt app is running!");
-})();
+// ------------------------------------------------------
+
+function isOnGoogleCloud() {
+	// https://cloud.google.com/functions/docs/env-var#nodejs_10_and_subsequent_runtimes
+	return process.env.K_SERVICE && process.env.K_REVISION;
+}
+
+if (!isOnGoogleCloud()) {
+	// Running on your local machine
+	(async () => {
+		// Start your app
+		console.log("⚡️ Slack app is running!");
+
+		await app.start(process.env.PORT);
+	})();
+}
+
+exports.slack = function (req, res) {
+	console.log(`Got a request: ${JSON.stringify(req.headers)}`);
+	if (req.rawBody) {
+		console.log(`Got raw request: ${req.rawBody}`);
+	}
+	expressApp(req, res);
+};
