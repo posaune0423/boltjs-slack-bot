@@ -39,9 +39,8 @@ if (!isOnGoogleCloud()) {
 }
 
 exports.slack = function (req, res) {
-	console.log(`Got a request: ${JSON.stringify(req.headers)}`);
-	if (req.rawBody) {
-		console.log(`Got raw request: ${req.rawBody}`);
-	}
+	// Start your app
+	console.log("⚡️ Slack app is running!");
+
 	expressApp(req, res);
 };
