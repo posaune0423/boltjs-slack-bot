@@ -54,4 +54,5 @@ gcloud functions deploy slack \
 --allow-unauthenticated
 ```
 - End point should be like below
+
 `https://<your-region>-<your-project-name>.cloudfunctions.net/slack/events`
