@@ -1,4 +1,4 @@
-# slack-delivery-cat
+# boltjs-slack-bot
 
 ## Overview
 This is a Slack app built with the [Bolt for JavaScript framework](https://slack.dev/bolt-js/) that delivers letter in the workspace.
