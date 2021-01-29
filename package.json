@@ -1,16 +1,17 @@
+
 {
     "name": "boltjs-slack-bot",
     "version": "1.0.0",
-    "description": "Getting Started ⚡️ Bolt for JavaScript",
+    "description": "Bolt Based Slack Bot Application working on Google Cloud Functions (ΦωΦ)",
     "main": "app.js",
     "scripts": {
         "ngrok": "ngrok http 3000",
-        "start": "node app.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "node index.js",
+        "gcf": "npx functions-framework --target=slack --port=3000"
     },
     "license": "MIT",
     "dependencies": {
-        "@slack/bolt": "^2.3.0"
-    },
-    "type": "module"
+        "@slack/bolt": "^2.5.0",
+        "@google-cloud/functions-framework": "^1.7.1"
+    }
 }
